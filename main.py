@@ -13,7 +13,8 @@ houses = 1
 if houses not in range(1, 12):
     raise ValueError(f"{houses} is not a valid number of houses.")
 
-nwmap = im.open("Finished_map.png")  # B/W map with the pink dots. Read only because I know I'll fuck it up otherwise.
+nwmap = im.open("Finished_map.png")  # B/W map with the pink dots.
+# The map seen above has a single pink pixel on each spot where there's a city. The exact color of that pixel is of the form (255,x,255), where x is the city's index seen below.
 s = nwmap.size
 pix = np.array(nwmap)  # Transferring it to an array so I can see each pixel individually
 table = csv.writer(open(f"results_{houses}_houses.csv", 'w', newline=''))
@@ -35,6 +36,7 @@ names = {
 
 # Opening the file for the cities' locations :
 try:
+    # Checking if the cities mapping has already been done.
     file = open("Cities.picl", "rb")
     cities = pickle.load(file)
 except:
@@ -63,6 +65,7 @@ for row in possibilities:
     for y in range(s[0]):
         for x in range(s[1]):
             if pix[x][y][1] > 0:
+                # Making sure we only do calculations on white pixels, which are walkable points.
                 distances[x][y] = min([((x - c[0]) ** 2 + (y - c[1]) ** 2) ** (1 / 2) for c in coords])
 
     for i in range(houses):
